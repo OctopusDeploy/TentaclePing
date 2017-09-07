@@ -75,7 +75,7 @@ namespace TentaclePong
                         Accept();
                     }
 
-                    Console.WriteLine("Accepted TCP client " + client.Client.RemoteEndPoint);
+                    Console.WriteLine($"{DateTime.UtcNow:s} Accepted TCP client " + client.Client.RemoteEndPoint);
                     ExecuteRequest(client);
                 }
                 catch (Exception ex)
