@@ -74,6 +74,7 @@ namespace TentaclePing
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write($"{DateTime.UtcNow:s} ");
                     Console.Write("Connect: ");
                     Console.ResetColor();
 
