@@ -16,7 +16,7 @@ namespace TentaclePing
 
         static int Main(string[] args)
         {
-            if (args.Length >= 1 && args.Length <= 4)
+            if (args.Length >= 1 && args.Length <= 5)
             {
                 var hostname = args[0];
                 var port = 10933;
@@ -30,14 +30,23 @@ namespace TentaclePing
                     dataSize = int.Parse(args[2]);
                 }
                 var chunkSize = 2;
-                if (args.Length == 4)
+                if (args.Length >= 4)
                 {
                     chunkSize = int.Parse(args[3]);
                 }
+                var sslProtocol = SslProtocols.Tls;
+                if (args.Length == 5)
+                {
+                    if (Enum.TryParse<SslProtocols>(args[4], out var parsedSslProtocol))
+                    {
+                        sslProtocol = parsedSslProtocol;
+                    }
+                }
 
+                Console.WriteLine($"Using SSL Protocol: {sslProtocol}");
                 Console.WriteLine("Pinging " + hostname + " on port " + port + (dataSize == 0 ? "" : ", sending " + dataSize + "Mb of data in " + chunkSize + "Mb chunks"));
                 chunkSizeInBytes = 1024*1024*chunkSize;
-                return ExecutePing(hostname, port, dataSize);
+                return ExecutePing(hostname, port, dataSize, sslProtocol);
             }
             PrintUsage();
             return 1;
@@ -48,7 +57,7 @@ namespace TentaclePing
             Console.WriteLine("TentaclePing.exe <your-tentacle-hostname> [<port>] [<datasize>] [<chunksize>]");
         }
 
-        private static int ExecutePing(string hostname, int port, int dataSize)
+        private static int ExecutePing(string hostname, int port, int dataSize, SslProtocols sslProtocol)
         {
             var failCount = 0;
             var successCount = 0;
@@ -87,13 +96,13 @@ namespace TentaclePing
                         while (dataToBeSent > 0)
                         {
                             var data = new string('A', (dataToBeSent < chunkSizeInBytes ? dataToBeSent : chunkSizeInBytes));
-                            SendRequest(hostname, port, out bytesRead, out connected, out sslEstablished, data);
+                            SendRequest(hostname, port, sslProtocol, out bytesRead, out connected, out sslEstablished, data);
                             dataToBeSent -= data.Length;
                         }
                     }
                     else
                     {
-                        SendRequest(hostname, port, out bytesRead, out connected, out sslEstablished);
+                        SendRequest(hostname, port, sslProtocol, out bytesRead, out connected, out sslEstablished);
                     }
 
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -114,7 +123,7 @@ namespace TentaclePing
             }
         }
 
-        private static void SendRequest(string hostname, int port, out int bytesRead, out bool connected, out bool sslEstablished, string data = null)
+        private static void SendRequest(string hostname, int port, SslProtocols sslProtocol, out int bytesRead, out bool connected, out bool sslEstablished, string data = null)
         {
             using (var client = new TcpClient())
             {
@@ -130,7 +139,7 @@ namespace TentaclePing
                     {
                         sslEstablished = true;
 
-                        ssl.AuthenticateAsClient(hostname, null, SslProtocols.Tls, false);
+                        ssl.AuthenticateAsClient(hostname, null, sslProtocol, false);
 
                         var writer = new StreamWriter(ssl);
                         writer.WriteLine("GET / HTTP/1.1");
