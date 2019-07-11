@@ -8,12 +8,13 @@ Unlike regular Ping, TentaclePing makes an SSL connection to the Tentacle servic
 
 The command takes four arguments:
 
-    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>]
+    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol> {None|Ssl2|Ssl3|Tls|Tls11|Tls12|Default}]
     
 Examples:
 
-    TentaclePing.exe MyServer         # Uses default port (10933)
-    TentaclePing.exe 10.0.0.1 10934   # Explicit port
+    TentaclePing.exe MyServer                   # Uses default port (10933)
+    TentaclePing.exe 10.0.0.1 10934             # Explicit port
+    TentaclePing.exe 10.0.0.1 10933 0 2 Tls12   # Specified IP address, port, data size, chunk size, and SSL Protocol
 
 If you are experiencing slow deployments or package uploads with Octopus, you can use TentaclePing to determine whether there is a connectivity problem:
 
