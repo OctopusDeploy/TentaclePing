@@ -87,8 +87,6 @@ namespace TentaclePong
 
         static void ExecuteRequest(TcpClient client)
         {
-            string clientThumbprint = null;
-            
             RemoteCertificateValidationCallback validate = (sender, clientCertificate, chain, sslPolicyErrors) =>
             {
                 return true;
