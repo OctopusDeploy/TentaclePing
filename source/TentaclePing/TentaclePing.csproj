@@ -2,13 +2,14 @@
     <PropertyGroup>
         <Description>Tentacle ping - a tool to test connections with Octopus Tentacle.</Description>
         <NeutralLanguage>en-US</NeutralLanguage>
-        <VersionPrefix>1.1.0</VersionPrefix>
+        <VersionPrefix>1.2.0</VersionPrefix>
         <Authors>Octopus Deploy</Authors>
         <AssemblyName>TentaclePing</AssemblyName>
         <RootNamespace>TentaclePing</RootNamespace>
         <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <OutputType>EXE</OutputType>
     </PropertyGroup>
     <ItemGroup>
       <Folder Include="Properties" />
