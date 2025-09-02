@@ -43,8 +43,35 @@ jobs:
       run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
+      shell: bash
       run: |
-        dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=true
+        echo "Publishing TentaclePing individually..."
+        dotnet publish source/TentaclePing/TentaclePing.csproj \
+          -c Release \
+          -r ${{ matrix.runtime }} \
+          --self-contained \
+          -f ${{ matrix.framework }} \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -p:PublishSingleFile=true \
+          -p:DebugType=None \
+          -p:PublishTrimmed=false \
+          -p:PublishReadyToRun=false
+          
+        echo "Publishing TentaclePong individually..."  
+        dotnet publish source/TentaclePong/TentaclePong.csproj \
+          -c Release \
+          -r ${{ matrix.runtime }} \
+          --self-contained \
+          -f ${{ matrix.framework }} \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -p:PublishSingleFile=true \
+          -p:DebugType=None \
+          -p:PublishTrimmed=false \
+          -p:PublishReadyToRun=false
+          
+        echo "Checking published files..."
+        ls -la source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/
+        ls -la source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/
 
         
     - name: Create Archives (Linux)
