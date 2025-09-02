@@ -37,7 +37,9 @@ jobs:
       run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
-      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=false
+      run: |
+        dotnet publish source/TentaclePing/TentaclePing.csproj -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=false
+        dotnet publish source/TentaclePong/TentaclePong.csproj -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=false
 
         
     - name: Create Archives (Linux)
