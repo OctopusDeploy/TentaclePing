@@ -42,9 +42,9 @@ jobs:
     - name: Organize Published Files
       run: |
         mkdir -p dist
-        cp source/TentaclePing/bin/Release/net8.0/${{ matrix.runtime }}/publish/TentaclePing* dist/ || true
-        cp source/TentaclePong/bin/Release/net8.0/${{ matrix.runtime }}/publish/TentaclePong* dist/ || true
-      
+        cp source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing* dist/ 2>/dev/null || true
+        cp source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong* dist/ 2>/dev/null || true
+        
     - name: Create Archive (Linux)
       if: runner.os != 'Windows'
       run: |
