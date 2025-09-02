@@ -34,14 +34,13 @@ jobs:
       run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
-      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -o publish/
+      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained
 
     - name: Organize Published Files
       run: |
-        # Create a flat structure for archiving
         mkdir -p dist
-        cp publish/TentaclePing/TentaclePing* dist/ 2>/dev/null || true
-        cp publish/TentaclePong/TentaclePong* dist/ 2>/dev/null || true
+        cp source/TentaclePing/bin/Release/net8.0/${{ matrix.runtime }}/publish/TentaclePing* dist/ 2>/dev/null || true
+        cp source/TentaclePong/bin/Release/net8.0/${{ matrix.runtime }}/publish/TentaclePong* dist/ 2>/dev/null || true
         ls -la dist/
       
     - name: Create Archive (Linux)
