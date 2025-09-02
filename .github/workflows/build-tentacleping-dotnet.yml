@@ -1,11 +1,12 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET TentaclePing
+name: Build TentaclePing
 
 on:
   pull_request:
     branches: [ "main" ]
+  workflow_call:  # This makes the workflow reusable
 
 jobs:
   build:
@@ -44,19 +45,28 @@ jobs:
     - name: Create Archives (Linux)
       if: runner.os != 'Windows'
       run: |
-        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish .
-        tar -czf TentaclePong-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish .
+        # Create temp directory for combined archive
+        mkdir -p dists
+        cp ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing dists/
+        cp ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong dists/
+        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C dists .
+        rm -rf dists
 
     - name: Create Archives (Windows)
       if: runner.os == 'Windows'
       run: |
-        Compress-Archive -Path ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing.exe -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
-        Compress-Archive -Path ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong.exe -DestinationPath TentaclePong-${{ matrix.runtime }}.zip
+        # Create temp directory for combined archive
+        New-Item -ItemType Directory -Path dists -Force
+        Copy-Item ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing.exe dists/
+        Copy-Item ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong.exe dists/
+        Compress-Archive -Path dists/* -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
+        Remove-Item -Recurse -Force dists
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: TentaclePing-${{ matrix.runtime }}
+        compression-level: 0
         path: |
           TentaclePing-${{ matrix.runtime }}.tar.gz
           TentaclePing-${{ matrix.runtime }}.zip
