@@ -15,10 +15,13 @@ jobs:
             include:
                 - os: ubuntu-latest
                   runtime: linux-x64
+                  framework: net8.0
                 - os: windows-latest
                   runtime: win-x64
+                  framework: net8.0-windows
                 - os: ubuntu-24.04-arm
                   runtime: linux-arm64
+                  framework: net8.0
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -34,7 +37,7 @@ jobs:
       run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
-      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained
+      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }}
 
     - name: Organize Published Files
       run: |
