@@ -28,16 +28,37 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore source/
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
-      run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained
+      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -o publish/
+
+    - name: Organize Published Files
+      run: |
+        # Create a flat structure for archiving
+        mkdir -p dist
+        cp publish/TentaclePing/TentaclePing* dist/ 2>/dev/null || true
+        cp publish/TentaclePong/TentaclePong* dist/ 2>/dev/null || true
+        ls -la dist/
+      
+    - name: Create Archive (Linux)
+      if: runner.os != 'Windows'
+      run: |
+        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C dist .
+        
+    - name: Create Archive (Windows)  
+      if: runner.os == 'Windows'
+      run: |
+        Compress-Archive -Path dist\* -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: tentacleping-${{ matrix.runtime }}-dotnet
-        path: source/*/bin/Release/*/publish/
+        name: TentaclePing-${{ matrix.runtime }}
+        path: |
+          TentaclePing-${{ matrix.runtime }}.tar.gz
+          TentaclePing-${{ matrix.runtime }}.zip
+
