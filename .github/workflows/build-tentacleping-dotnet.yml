@@ -37,23 +37,20 @@ jobs:
       run: dotnet build source/ --no-restore -c Release
 
     - name: Publish Self-Contained
-      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }}
+      run: dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true
 
-    - name: Organize Published Files
-      run: |
-        mkdir -p dist
-        cp source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing* dist/ 2>/dev/null || true
-        cp source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong* dist/ 2>/dev/null || true
         
-    - name: Create Archive (Linux)
+    - name: Create Archives (Linux)
       if: runner.os != 'Windows'
       run: |
-        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C dist .
-        
-    - name: Create Archive (Windows)  
+        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C publish/TentaclePing .
+        tar -czf TentaclePong-${{ matrix.runtime }}.tar.gz -C publish/TentaclePong .
+
+    - name: Create Archives (Windows)
       if: runner.os == 'Windows'
       run: |
-        Compress-Archive -Path dist\* -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
+        Compress-Archive -Path publish\TentaclePing.exe -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
+        Compress-Archive -Path publish\TentaclePong.exe -DestinationPath TentaclePong-${{ matrix.runtime }}.zip
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
