@@ -8,7 +8,7 @@
         <RootNamespace>TentaclePong</RootNamespace>
         <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFrameworks>net8.0;net8.0-windows</TargetFrameworks>
         <OutputType>EXE</OutputType>
     </PropertyGroup>
     <ItemGroup>

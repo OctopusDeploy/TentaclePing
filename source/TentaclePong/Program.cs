@@ -99,7 +99,9 @@ namespace TentaclePong
                 {
                     // We don't actually validate the client, accepting anything; validation
                     // status is reflected in validClientThumprint != null.
+                    #pragma warning disable SYSLIB0039
                     ssl.AuthenticateAsServer(serverCertificate, true, SslProtocols.Tls, false);
+                    #pragma warning restore SYSLIB0039
 
                     var reader = new StreamReader(ssl);
 

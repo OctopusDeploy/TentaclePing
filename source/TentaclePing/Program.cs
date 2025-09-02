@@ -34,7 +34,11 @@ namespace TentaclePing
                 {
                     chunkSize = int.Parse(args[3]);
                 }
+                
+                #pragma warning disable SYSLIB0039
                 var sslProtocol = SslProtocols.Tls;
+                #pragma warning restore SYSLIB0039
+
                 if (args.Length == 5)
                 {
                     if (Enum.TryParse<SslProtocols>(args[4], out var parsedSslProtocol))
