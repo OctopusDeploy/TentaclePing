@@ -230,3 +230,4 @@ FakesAssemblies/
 *.ide
 *.ide-shm
 *.ide-wal
+.idea
