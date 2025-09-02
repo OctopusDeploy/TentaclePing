@@ -43,6 +43,7 @@ jobs:
     - name: Create Archives (Linux)
       if: runner.os != 'Windows'
       run: |
+        pwd
         tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePing/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish .
         tar -czf TentaclePong-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePong/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish .
 
