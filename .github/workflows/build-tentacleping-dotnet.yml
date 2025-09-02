@@ -44,14 +44,14 @@ jobs:
       if: runner.os != 'Windows'
       run: |
         pwd
-        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePing/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish .
-        tar -czf TentaclePong-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePong/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish .
+        tar -czf TentaclePing-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish .
+        tar -czf TentaclePong-${{ matrix.runtime }}.tar.gz -C ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish .
 
     - name: Create Archives (Windows)
       if: runner.os == 'Windows'
       run: |
-        Compress-Archive -Path ./source/TentaclePing/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish/TentaclePing.exe -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
-        Compress-Archive -Path ./source/TentaclePong/bin/Release/${{ matrix.runtime }}/${{ matrix.framework }}/publish/TentaclePong.exe -DestinationPath TentaclePong-${{ matrix.runtime }}.zip
+        Compress-Archive -Path ./source/TentaclePing/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePing.exe -DestinationPath TentaclePing-${{ matrix.runtime }}.zip
+        Compress-Archive -Path ./source/TentaclePong/bin/Release/${{ matrix.framework }}/${{ matrix.runtime }}/publish/TentaclePong.exe -DestinationPath TentaclePong-${{ matrix.runtime }}.zip
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
