@@ -44,7 +44,7 @@ jobs:
 
     - name: Publish Self-Contained
       run: |
-        dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=false
+        dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=None -p:PublishTrimmed=false -p:PublishReadyToRun=true
 
         
     - name: Create Archives (Linux)
