@@ -46,3 +46,12 @@ If you don't plan to watch TentaclePing run, you may want to pipe the results to
     TentaclePing.exe MyServer 10933 > Output.txt
     
 This file can then easily be sent to the Octopus support team (support@octopusdeploy.com) for analysis.
+
+
+## Contributing
+
+This project is managed by Github Actions. 
+
+Create a new branch for your changes and open a PR to build assests
+
+Pushing a tag with the format v1.2.3 will trigger a new Release to be created
