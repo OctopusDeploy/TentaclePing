@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -42,11 +42,11 @@ jobs:
           VERSION="${{ github.ref_name }}"
           VERSION_NUMBER="${VERSION#v}"
           dotnet build source/ --no-restore -c Release -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER
-          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER
+          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER -p:PublishTrimmed=true
         else
           VERSION_PREFIX=$(grep -oP '<VersionPrefix>\K[^<]+' source/TentaclePing/TentaclePing.csproj)
           dotnet build source/ --no-restore -c Release -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX
-          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX
+          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX -p:PublishTrimmed=true
         fi
 
         mkdir -p dists
@@ -62,11 +62,11 @@ jobs:
           $VERSION = "${{ github.ref_name }}"
           $VERSION_NUMBER = $VERSION -replace '^v', ''
           dotnet build source/ --no-restore -c Release -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER
-          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER
+          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_NUMBER -p:AssemblyVersion=$VERSION_NUMBER -p:FileVersion=$VERSION_NUMBER -p:PublishTrimmed=true
         } else {
           $VERSION_PREFIX = (Select-String -Path "source/TentaclePing/TentaclePing.csproj" -Pattern "<VersionPrefix>([^<]+)</VersionPrefix>").Matches.Groups[1].Value
           dotnet build source/ --no-restore -c Release -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX
-          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX
+          dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=$VERSION_PREFIX -p:AssemblyVersion=$VERSION_PREFIX -p:FileVersion=$VERSION_PREFIX -p:PublishTrimmed=true
         }
 
         New-Item -ItemType Directory -Path dists -Force
