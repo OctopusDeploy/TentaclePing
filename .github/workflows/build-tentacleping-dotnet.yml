@@ -34,12 +34,27 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore source/
 
+    - name: Get version info
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "push" ] && [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          # For tagged releases, use the tag without 'v' prefix
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUMBER="${VERSION#v}"
+        else
+          # For PR builds, read VersionPrefix from project file and append dev suffix
+          VERSION_PREFIX=$(grep -oP '<VersionPrefix>\K[^<]+' source/TentaclePing/TentaclePing.csproj || grep -oP '<VersionPrefix>\K[^<]+' source/TentaclePong/TentaclePong.csproj || echo "1.0.0")
+          VERSION_NUMBER="${VERSION_PREFIX}-dev.${{ github.run_number }}"
+        fi
+        echo "version=$VERSION_NUMBER" >> $GITHUB_OUTPUT
+        echo "Building version: $VERSION_NUMBER"
+
     - name: Build
-      run: dotnet build source/ --no-restore -c Release
+      run: dotnet build source/ --no-restore -c Release -p:Version=${{ steps.version.outputs.version }} -p:AssemblyVersion=${{ steps.version.outputs.version }} -p:FileVersion=${{ steps.version.outputs.version }}
 
     - name: Publish Self-Contained
       run: |
-        dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false
+        dotnet publish source/ -c Release -r ${{ matrix.runtime }} --self-contained true -f ${{ matrix.framework }} -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:DebugType=embedded -p:PublishReadyToRun=false -p:Version=${{ steps.version.outputs.version }} -p:AssemblyVersion=${{ steps.version.outputs.version }} -p:FileVersion=${{ steps.version.outputs.version }}
 
         
     - name: Create Archives (Linux)

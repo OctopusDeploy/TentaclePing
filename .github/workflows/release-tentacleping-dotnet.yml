@@ -36,15 +36,8 @@ jobs:
           release_name: ${{ github.ref_name }}
           body: |
             # TentaclePing ${{ github.ref_name }}
-            
-            ## 📦 Downloads:
 
-            ### Linux-x64**: [TentaclePing-linux-x64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/TentaclePing-linux-x64.tar.gz)
-
-            ### Linux-arm64**: [TentaclePing-linux-arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/TentaclePing-linux-arm64.tar.gz)
-
-            ### Windows-x64**: [TentaclePing-win-x64.zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/TentaclePing-win-x64.zip)
-
+        
           draft: false
           prerelease: false
 
