@@ -22,10 +22,6 @@ jobs:
         with:
           path: artifacts
 
-      - name: List artifacts for debugging
-        run: |
-          find artifacts -type f -name "*.zip" | sort
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
