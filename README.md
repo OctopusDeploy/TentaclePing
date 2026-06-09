@@ -8,7 +8,7 @@ Unlike regular Ping, TentaclePing makes an SSL connection to the Tentacle servic
 
 The command takes four arguments:
 
-    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol> {None|Ssl2|Ssl3|Tls|Tls11|Tls12|Default}] [--proxy=http://[user:pass@]proxyhost:port]
+    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol> {None|Ssl2|Ssl3|Tls|Tls11|Tls12|Default}]
     
 Examples:
 
@@ -20,12 +20,10 @@ Examples:
 
 When the Octopus Server reaches a Listening Tentacle through a proxy, you can have TentaclePing take the same path so that it reproduces the real connection. TentaclePing supports an HTTP proxy (using the HTTP `CONNECT` method to tunnel the TLS connection through untouched), with optional Basic authentication — matching what Octopus Server supports for Listening Tentacle communication. SOCKS proxies are not supported.
 
-The proxy can be set via the `--proxy` argument (which may appear anywhere on the command line):
+The proxy is configured via the `HTTP_PROXY` (or `HTTPS_PROXY`) environment variable:
 
-    TentaclePing.exe MyServer 10933 --proxy=http://proxy.example.com:8080
-    TentaclePing.exe MyServer 10933 --proxy=http://user:pass@proxy.example.com:8080
-
-Alternatively, set the `HTTP_PROXY` (or `HTTPS_PROXY`) environment variable:
+    set HTTP_PROXY=http://proxy.example.com:8080
+    TentaclePing.exe MyServer 10933
 
     set HTTP_PROXY=http://user:pass@proxy.example.com:8080
     TentaclePing.exe MyServer 10933

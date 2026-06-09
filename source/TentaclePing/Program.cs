@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Security;
@@ -19,25 +18,11 @@ namespace TentaclePing
 
         static int Main(string[] args)
         {
-            // Pull out the optional --proxy flag (it may appear anywhere), leaving the
-            // positional arguments untouched for backwards compatibility.
-            string proxyArg = null;
-            var positional = new List<string>();
-            foreach (var arg in args)
-            {
-                if (arg.StartsWith("--proxy=", StringComparison.OrdinalIgnoreCase))
-                {
-                    proxyArg = arg.Substring("--proxy=".Length);
-                }
-                else
-                {
-                    positional.Add(arg);
-                }
-            }
-
+            // The proxy is configured via the HTTP_PROXY / HTTPS_PROXY environment
+            // variables only; there is no command-line flag for it.
             try
             {
-                proxy = ProxySettings.Resolve(proxyArg);
+                proxy = ProxySettings.Resolve();
             }
             catch (Exception ex)
             {
@@ -46,32 +31,32 @@ namespace TentaclePing
                 return 1;
             }
 
-            if (positional.Count >= 1 && positional.Count <= 5)
+            if (args.Length >= 1 && args.Length <= 5)
             {
-                var hostname = positional[0];
+                var hostname = args[0];
                 var port = 10933;
-                if (positional.Count >= 2)
+                if (args.Length >= 2)
                 {
-                    port = int.Parse(positional[1]);
+                    port = int.Parse(args[1]);
                 }
                 var dataSize = 0;
-                if (positional.Count >= 3)
+                if (args.Length >= 3)
                 {
-                    dataSize = int.Parse(positional[2]);
+                    dataSize = int.Parse(args[2]);
                 }
                 var chunkSize = 2;
-                if (positional.Count >= 4)
+                if (args.Length >= 4)
                 {
-                    chunkSize = int.Parse(positional[3]);
+                    chunkSize = int.Parse(args[3]);
                 }
 
                 #pragma warning disable SYSLIB0039
                 var sslProtocol = SslProtocols.Tls;
                 #pragma warning restore SYSLIB0039
 
-                if (positional.Count == 5)
+                if (args.Length == 5)
                 {
-                    if (Enum.TryParse<SslProtocols>(positional[4], out var parsedSslProtocol))
+                    if (Enum.TryParse<SslProtocols>(args[4], out var parsedSslProtocol))
                     {
                         sslProtocol = parsedSslProtocol;
                     }
@@ -92,8 +77,8 @@ namespace TentaclePing
 
         private static void PrintUsage()
         {
-            Console.WriteLine("TentaclePing.exe <your-tentacle-hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol>] [--proxy=http://[user:pass@]proxyhost:port]");
-            Console.WriteLine("The proxy may also be set via the HTTP_PROXY or HTTPS_PROXY environment variable.");
+            Console.WriteLine("TentaclePing.exe <your-tentacle-hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol>]");
+            Console.WriteLine("A proxy can be set via the HTTP_PROXY or HTTPS_PROXY environment variable, e.g. http://[user:pass@]proxyhost:port.");
         }
 
         private static int ExecutePing(string hostname, int port, int dataSize, SslProtocols sslProtocol)
@@ -318,16 +303,12 @@ namespace TentaclePing
             public string Password { get; private set; }
             public bool HasCredentials => !string.IsNullOrEmpty(Username);
 
-            public static ProxySettings Resolve(string explicitValue)
+            public static ProxySettings Resolve()
             {
-                var value = explicitValue;
-                if (string.IsNullOrEmpty(value))
-                {
-                    value = Environment.GetEnvironmentVariable("HTTP_PROXY")
+                var value = Environment.GetEnvironmentVariable("HTTP_PROXY")
                             ?? Environment.GetEnvironmentVariable("http_proxy")
                             ?? Environment.GetEnvironmentVariable("HTTPS_PROXY")
                             ?? Environment.GetEnvironmentVariable("https_proxy");
-                }
 
                 return string.IsNullOrEmpty(value) ? null : Parse(value);
             }
