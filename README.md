@@ -8,13 +8,29 @@ Unlike regular Ping, TentaclePing makes an SSL connection to the Tentacle servic
 
 The command takes four arguments:
 
-    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol> {None|Ssl2|Ssl3|Tls|Tls11|Tls12|Default}]
+    TentaclePing <ip/hostname> [<port>] [<datasize>] [<chunksize>] [<ssl_protocol> {None|Ssl2|Ssl3|Tls|Tls11|Tls12|Default}] [--proxy=http://[user:pass@]proxyhost:port]
     
 Examples:
 
     TentaclePing.exe MyServer                   # Uses default port (10933)
     TentaclePing.exe 10.0.0.1 10934             # Explicit port
     TentaclePing.exe 10.0.0.1 10933 0 2 Tls12   # Specified IP address, port, data size, chunk size, and SSL Protocol
+
+## Testing through a proxy
+
+When the Octopus Server reaches a Listening Tentacle through a proxy, you can have TentaclePing take the same path so that it reproduces the real connection. TentaclePing supports an HTTP proxy (using the HTTP `CONNECT` method to tunnel the TLS connection through untouched), with optional Basic authentication — matching what Octopus Server supports for Listening Tentacle communication. SOCKS proxies are not supported.
+
+The proxy can be set via the `--proxy` argument (which may appear anywhere on the command line):
+
+    TentaclePing.exe MyServer 10933 --proxy=http://proxy.example.com:8080
+    TentaclePing.exe MyServer 10933 --proxy=http://user:pass@proxy.example.com:8080
+
+Alternatively, set the `HTTP_PROXY` (or `HTTPS_PROXY`) environment variable:
+
+    set HTTP_PROXY=http://user:pass@proxy.example.com:8080
+    TentaclePing.exe MyServer 10933
+
+When a proxy is in use, failures are reported with extra detail so you can tell whether the connection to the proxy, the `CONNECT` tunnel, or the TLS handshake failed.
 
 If you are experiencing slow deployments or package uploads with Octopus, you can use TentaclePing to determine whether there is a connectivity problem:
 
